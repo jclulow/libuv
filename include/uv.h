@@ -391,6 +391,7 @@ typedef void (*uv_poll_cb)(uv_poll_t* handle, int status, int events);
 typedef void (*uv_timer_cb)(uv_timer_t* handle, int status);
 /* TODO: do these really need a status argument? */
 typedef void (*uv_async_cb)(uv_async_t* handle, int status);
+typedef void (*uv_cross_cb)(uv_loop_t*, void*, void**);
 typedef void (*uv_prepare_cb)(uv_prepare_t* handle, int status);
 typedef void (*uv_check_cb)(uv_check_t* handle, int status);
 typedef void (*uv_idle_cb)(uv_idle_t* handle, int status);
@@ -1302,6 +1303,21 @@ UV_EXTERN int uv_async_init(uv_loop_t*, uv_async_t* async,
  * libuv is single threaded at the moment.
  */
 UV_EXTERN int uv_async_send(uv_async_t* async);
+
+
+/*
+ * Run a callback in the event loop thread.  Safe to call from any thread
+ * that is NOT the event loop thread.  This function blocks until the callback
+ * has been run.
+ */
+UV_EXTERN int uv_cross_call(uv_loop_t*, uv_cross_cb, void*, void**);
+
+
+/*
+ * Run a callback in the event loop thread.  Safe to call from any thread,
+ * including the event loop thread.  This function does not block.
+ */
+UV_EXTERN int uv_cross_post(uv_loop_t*, uv_cross_cb, void*);
 
 
 /*

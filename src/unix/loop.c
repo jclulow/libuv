@@ -22,6 +22,7 @@
 #include "uv.h"
 #include "tree.h"
 #include "internal.h"
+#include "uv-crossq.h"
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -126,11 +127,15 @@ static int uv__loop_init(uv_loop_t* loop, int default_loop) {
   uv__handle_unref(&loop->wq_async);
   loop->wq_async.flags |= UV__HANDLE_INTERNAL;
 
+  if (uv__cross_call_init(loop))
+    abort();
+
   return 0;
 }
 
 
 static void uv__loop_delete(uv_loop_t* loop) {
+  uv__cross_call_fini(loop);
   uv__signal_loop_cleanup(loop);
   uv__platform_loop_delete(loop);
   uv__async_stop(loop, &loop->async_watcher);

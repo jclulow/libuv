@@ -45,6 +45,7 @@ typedef intptr_t ssize_t;
 #endif
 
 #include "tree.h"
+#include "uv-crossq.h"
 
 #define MAX_PIPENAME_LEN 256
 
@@ -274,6 +275,8 @@ typedef struct {
 
 RB_HEAD(uv_timer_tree_s, uv_timer_s);
 
+typedef struct uv__crossq uv__crossq_t;
+
 #define UV_LOOP_PRIVATE_FIELDS                                                \
     /* The loop's I/O completion port */                                      \
   HANDLE iocp;                                                                \
@@ -307,7 +310,8 @@ RB_HEAD(uv_timer_tree_s, uv_timer_s);
   /* Counter to keep track of active udp streams */                           \
   unsigned int active_udp_streams;                                            \
   /* Counter to started timer */                                              \
-  uint64_t timer_counter;
+  uint64_t timer_counter;                                                     \
+  uv__crossq_t* crossq;
 
 #define UV_REQ_TYPE_PRIVATE                                                   \
   /* TODO: remove the req suffix */                                           \

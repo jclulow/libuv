@@ -31,6 +31,7 @@
 #include "internal.h"
 #include "handle-inl.h"
 #include "req-inl.h"
+#include "uv-crossq.h"
 
 
 /* The only event loop we support right now */
@@ -118,6 +119,9 @@ static void uv_loop_init(uv_loop_t* loop) {
 
   loop->timer_counter = 0;
   loop->stop_flag = 0;
+
+  if (uv__cross_call_init(loop))
+    abort();
 }
 
 
@@ -159,6 +163,7 @@ uv_loop_t* uv_loop_new(void) {
 
 
 void uv_loop_delete(uv_loop_t* loop) {
+  uv__cross_call_fini(loop);
   if (loop != &uv_default_loop_) {
     int i;
     for (i = 0; i < ARRAY_SIZE(loop->poll_peer_sockets); i++) {

@@ -66,6 +66,8 @@
         'src/queue.h',
         'src/uv-common.c',
         'src/uv-common.h',
+        'src/uv-crossq.c',
+        'src/uv-crossq.h',
         'src/version.c'
       ],
       'conditions': [
